@@ -17,9 +17,9 @@ class Code(Base):
     __tablename__ = 'code'
     
     id = Column(Integer, primary_key=True, index=True)
-    assignment_id = Column(Integer, ForeignKey('assignment.id'), nullable=False)
+    assignment_id = Column(Integer, nullable=False)
     code_name = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    user_id = Column(Integer,  nullable=False)
     code = Column(JSON, nullable=False)
 
 class Review(Base):
@@ -57,6 +57,7 @@ class AssignmentBord(Base):
     
     user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
     assignment_id = Column(Integer, ForeignKey('assignment.id'), primary_key=True)
+    assignment_name = Column(String, nullable=False)
     is_submit = Column(Boolean, default=False)
 
     __table_args__ = (UniqueConstraint('user_id', 'assignment_id', name='_user_assignment_uc'),)

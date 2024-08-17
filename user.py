@@ -5,21 +5,23 @@ from schemas import UserCreate
 from fastapi import HTTPException
 
 def hash_password(password: str) -> str:
-    """SHA-256을 사용하여 비밀번호를 해싱합니다."""
     return hashlib.sha256(password.encode()).hexdigest()
 
 def get_user_by_username(db: Session, username: str):
-    """사용자 이름으로 사용자를 조회합니다."""
     return db.query(User).filter(User.username == username).first()
+
+def get_user_id_by_name(db: Session, username: str):
+    return db.query(User).filter(User.username == username).first().id
+
 def get_user_by_user_id(db: Session, user_id: str):
-    """사용자 이름으로 사용자를 조회합니다."""
     return db.query(User).filter(User.user_id == user_id).first()
+
 def get_user_by_token(db: Session, token: str):
-    """토큰으로 사용자를 조회합니다."""
     return db.query(User).filter(User.token == token).first()
 
 def get_user_id_by_token(db: Session, token: str):
     return db.query(User).filter(User.token == token).first().user_id
+
 
 def create_user(db: Session, user: UserCreate):
     # 사용자 이름이 이미 존재하는지 확인

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 class UserBase(BaseModel):
     user_id: str
@@ -19,10 +19,10 @@ class User(UserBase):
 class UserCreateresponse(UserBase):
     created_at: datetime
 class CodeBase(BaseModel):
-    assignment_id: int
+    assignment_name: str
     code_name: str
-    user_id: int
-    code: dict
+    token: str
+    code: str
 
 class Token(BaseModel):
     access_token: str
@@ -31,6 +31,12 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: Optional[str] = None
 
+class CodeResponse(BaseModel):
+    code_name: str
+    code: Dict[int, str]  # JSON 형식으로 저장된 코드
+
+    class Config:
+        from_attributes = True
 class CodeCreate(CodeBase):
     pass
 
@@ -42,12 +48,13 @@ class Code(CodeBase):
         from_attributes = True  # 변경된 부분
 
 class ReviewBase(BaseModel):
-    user_id: str
-    code_id: int
+    user_name: str
+    assignment_code_id: int
     content: str
 
 class ReviewCreate(ReviewBase):
-    pass
+    create_timestamp: datetime
+
 
 class Review(ReviewBase):
     id: int
@@ -99,14 +106,15 @@ class AssignmentBord(AssignmentBordBase):
     pass
 
 class AssignmentCodeBase(BaseModel):
-    user_id: int
-    assignment_id: int
+    token: str
+    assignment_id: str
     submit_date: datetime
     language: str
     ai_rate: float
 
 class AssignmentCodeCreate(AssignmentCodeBase):
-    pass
+    skip: int
+    limit: int
 
 class AssignmentCode(AssignmentCodeBase):
     id: int

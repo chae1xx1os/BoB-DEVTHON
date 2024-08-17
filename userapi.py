@@ -5,16 +5,35 @@ from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
 from typing import Optional
-from schemas import Token, UserCreate, UserCreateresponse, User as UserSchema
+from schemas import Review, ReviewBase, ReviewCreate, AssignmentCodeCreate, AssignmentCodeBase, CodeResponse, CodeBase, Token, UserCreate, UserCreateresponse, User as UserSchema
 from database import db
 from models import Base, User
 from user import get_user_id_by_token, get_user_by_username, get_user_by_user_id, create_user as original_create_user
+import secrets, uuid
 
 app = FastAPI()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = "YOUR_SECRET_KEY"
+
+import hashlib
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+from jose import jwt, JWTError
+from datetime import datetime, timedelta
+from typing import Optional
+from schemas import CodeResponse, CodeBase, Token, UserCreate, UserCreateresponse, User as UserSchema
+from database import db
+from models import Base, User
+from user import get_user_id_by_token, get_user_by_username, get_user_by_user_id, create_user as original_create_user
+import secrets, uuid, os
+
+app = FastAPI()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -24,14 +43,24 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return hash_password(plain_password) == hashed_password
 
+SECRET_KEY = "ajdfkldixnldasvckdkdiiehldasnxo"
+
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
+    to_encode.update({
+        "iat": datetime.utcnow(),
+        "jti": str(uuid.uuid4())  # JWT ID를 유니크하게 설정합니다.
+    })
+
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    
     to_encode.update({"exp": expire})
+    
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    
     return encoded_jwt
 
 @app.post("/api/token", response_model=Token)
@@ -43,18 +72,20 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     
-    # 토큰을 데이터베이스에 저장
+    # 토큰을 데이터베이스에 저장하려면 적절한 방법으로 처리합니다.
     user.token = access_token
     db.add(user)
     db.commit()
     db.refresh(user)
     
     return {"access_token": access_token, "token_type": "bearer"}
+
 
 @app.post("/api/users", response_model=UserCreateresponse)
 def create_user_endpoint(user: UserCreate, db: Session = Depends(db.get_session)):
@@ -74,6 +105,7 @@ def create_user_endpoint(user: UserCreate, db: Session = Depends(db.get_session)
 import assignment as assignment_crud
 from schemas import Assignment, AssignmentCreate
 from typing import List
+from code import get_create_code, get_code_by_assignment_name_and_token
 
 @app.get("/api/assignment", response_model=List[Assignment])
 def read_assignments(skip: int = 0, limit: int = 10, db: Session = Depends(db.get_session)):
@@ -85,19 +117,98 @@ def create_assignment(assignment: AssignmentCreate, db: Session = Depends(db.get
     new_assignment = assignment_crud.create_assignment(db=db, assignment=assignment)
     return new_assignment
 
-import assignmentbord, schemas
+@app.post("/api/post/code")
+def create_code(code: CodeBase, db: Session = Depends(db.get_session)):
+    new_code = get_create_code(db=db, code=code)
+    return {"code_name": new_code.code_name, "message": "Code created successfully"}
 
-@app.get("/api/assignmentbord/{token}", response_model=List[schemas.AssignmentBordBase])
-def read_assignment_bords(token: str, db: Session = Depends(db.get_session)):
-    user_id = get_user_id_by_token(db, token)
-    if not user_id:
-        raise HTTPException(status_code=404, detail="User not found")
+@app.get("/api/code", response_model=List[CodeResponse])
+def read_code(
+    assignment_name: str, 
+    token: str, 
+    db: Session = Depends(db.get_session)
+):
+    # Get codes based on assignment_name and token
+    codes = get_code_by_assignment_name_and_token(db, assignment_name, token)
     
-    assignment_bords = assignmentbord.get_assignment_bords_for_user(db, user_id)
-    return [
-        schemas.AssignmentBordBase(
-            assignment_name=ab.assignment_name,
-            is_submit=ab.is_submit
-        )
-        for ab in assignment_bords
-    ]
+    if not codes:
+        raise HTTPException(status_code=404, detail="No codes found for the given assignment and token")
+    
+    return codes
+
+from assignmentcode import get_assignment_codes, get_assignment_code, create_assignment_code, delete_assignment_code, update_assignment_code
+
+@app.post("api/assignment_codes/", response_model=AssignmentCodeBase)
+def _create_assignment_code(
+    assignment_code: AssignmentCodeBase,
+    token: str,
+    db: Session = Depends(db.get_session)
+):
+    return create_assignment_code(db, assignment_code, token)
+
+@app.get("api/assignment_codes/", response_model=List[AssignmentCodeBase])
+def read_assignment_codes(skip: int = 0, limit: int = 10, db: Session = Depends(db.get_session)):
+    return get_assignment_codes(db, skip=skip, limit=limit)
+
+@app.get("api/assignment_codes/{assignment_code_id}", response_model=AssignmentCodeBase)
+def read_assignment_code(assignment_code_id: int, db: Session = Depends(db.get_session)):
+    db_assignment_code = get_assignment_code(db, assignment_code_id)
+    if db_assignment_code is None:
+        raise HTTPException(status_code=404, detail="AssignmentCode not found")
+    return db_assignment_code
+
+@app.put("api/assignment_codes/{assignment_code_id}", response_model=AssignmentCodeBase)
+def update_assignment_code(
+    assignment_code_id: int,
+    updated_data: AssignmentCodeBase,
+    db: Session = Depends(db.get_session)
+):
+    db_assignment_code = update_assignment_code(db, assignment_code_id, updated_data)
+    if db_assignment_code is None:
+        raise HTTPException(status_code=404, detail="AssignmentCode not found")
+    return db_assignment_code
+
+@app.delete("api/assignment_codes/{assignment_code_id}", response_model=AssignmentCodeBase)
+def delete_assignment_code(assignment_code_id: int, db: Session = Depends(db.get_session)):
+    db_assignment_code = delete_assignment_code(db, assignment_code_id)
+    if db_assignment_code is None:
+        raise HTTPException(status_code=404, detail="AssignmentCode not found")
+    return db_assignment_code
+
+from review import create_review, get_review, get_reviews, delete_review, update_review
+
+@app.post("/reviews/", response_model=Review)
+def create_review(
+    review: ReviewCreate,
+    db: Session = Depends(db.get_session)
+):
+    return create_review(db, review)
+
+@app.get("/reviews/", response_model=List[Review])
+def read_reviews(skip: int = 0, limit: int = 10, db: Session = Depends(db.get_session)):
+    return get_reviews(db, skip=skip, limit=limit)
+
+@app.get("/reviews/{review_id}", response_model=Review)
+def read_review(review_id: int, db: Session = Depends(db.get_session)):
+    db_review = get_review(db, review_id)
+    if db_review is None:
+        raise HTTPException(status_code=404, detail="Review not found")
+    return db_review
+
+@app.put("/reviews/{review_id}", response_model=Review)
+def update_review(
+    review_id: int,
+    updated_data: ReviewBase,
+    db: Session = Depends(db.get_session)
+):
+    db_review = update_review(db, review_id, updated_data)
+    if db_review is None:
+        raise HTTPException(status_code=404, detail="Review not found")
+    return db_review
+
+@app.delete("/reviews/{review_id}", response_model=Review)
+def delete_review(review_id: int, db: Session = Depends(db.get_session)):
+    db_review = delete_review(db, review_id)
+    if db_review is None:
+        raise HTTPException(status_code=404, detail="Review not found")
+    return db_review
