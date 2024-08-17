@@ -12,7 +12,7 @@ import { MountainIcon } from "@/components/icons/mountain-icon";
 export default function HomePage() {
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isRegisterOpen, setRegisterOpen] = useState(false);
-
+  const [isLogined, setIsLogined] = useState(false);
   const toggleLogin = () => {
     setLoginOpen(!isLoginOpen);
     if (isRegisterOpen) setRegisterOpen(false);
@@ -22,7 +22,28 @@ export default function HomePage() {
     setRegisterOpen(!isRegisterOpen);
     if (isLoginOpen) setLoginOpen(false);
   };
+  const onLoginSuccess = () => {
+    if (isLoginOpen) setLoginOpen(false);
+    setIsLogined(true);
 
+  }
+  const onRegisterSuccess = () => {
+    if (isRegisterOpen) setRegisterOpen(false);
+
+  }
+
+  const logOutBtnClicked = () => {
+    // if (!isLogined) {
+    //   // 로그인 상태 체크
+    //   return;
+    // }
+
+    //로그인상태일시
+    // 
+    console.log('ddddddddddd')
+    setIsLogined(false);
+
+  }
   return (
     <div className="relative min-h-screen flex flex-col">
       <header className="bg-background border-b flex items-center justify-between px-6 py-4 shadow-sm">
@@ -38,21 +59,32 @@ export default function HomePage() {
             Code Review
           </Link>
         </div>
+        {isLogined ? (
+      <button
+        className="p-2 bg-red-500 text-white rounded hover:bg-red-600"
+        onClick={logOutBtnClicked}
+      >
+        로그아웃
+      </button>
+    ) : (
+      <>
+      <div className='justify-left gap-[12px]'>
 
-        <div className="flex items-center gap-4">
-          <button
-            className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            onClick={toggleLogin}
-          >
-            로그인
-          </button>
-          <button
-            className="p-2 bg-green-500 text-white rounded hover:bg-green-600"
-            onClick={toggleRegister}
-          >
-            회원가입
-          </button>
-        </div>
+        <button
+          className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onClick={toggleLogin}
+        >
+          로그인
+        </button>
+        <button
+          className="ml-8 p-2 bg-green-500 text-white rounded hover:bg-green-600"
+          onClick={toggleRegister}
+        >
+          회원가입
+        </button>
+      </div>
+      </>
+    )}
       </header>
 
       <main className="flex-grow container mx-auto p-6">
@@ -74,7 +106,7 @@ export default function HomePage() {
       {isLoginOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <LoginComponent onRegister={toggleRegister} />
+            <LoginComponent onRegister={toggleRegister} onUpdateValue={onLoginSuccess} />
             <button
               className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded"
               onClick={toggleLogin}
@@ -88,7 +120,7 @@ export default function HomePage() {
       {isRegisterOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <RegisterComponent onLogin={toggleLogin} />
+            <RegisterComponent onLogin={toggleLogin} onUpdateValue={onRegisterSuccess} />
             <button
               className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded"
               onClick={toggleRegister}
