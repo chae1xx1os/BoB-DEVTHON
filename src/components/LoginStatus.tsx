@@ -1,3 +1,4 @@
+// src/components/LoginStatus.tsx
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
@@ -48,12 +49,27 @@ const options = {
       text: 'Most Popular Coding Frameworks',
     },
   },
+  layout: {
+    padding: {
+      top: 180, // 위쪽 패딩을 40px로 설정
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        autoSkip: false,
+      },
+    },
+    y: {
+      beginAtZero: true,
+    },
+  },
 };
 
 const LoginStatus = () => {
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4">
-      <Bar data={data} options={options} />
+    <div className="bg-white rounded-lg shadow-lg p-6">
+      <Bar data={data} options={options} style={{ height: '500px', paddingTop: '40px' }} />
     </div>
   );
 };

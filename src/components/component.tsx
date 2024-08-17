@@ -164,7 +164,7 @@ export function Component() {
                     <div className="text-sm text-muted-foreground">3rd Place</div>
                   </div>
                 </div>
-                <div className="text-xl font-bold">2100</div>
+                <div className="text-xl font-bold">1100</div>
               </div>
             </div>
           </CardContent>

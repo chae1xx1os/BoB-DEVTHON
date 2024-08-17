@@ -57,6 +57,16 @@
     --chart-4: #8a4b8a;
     --chart-5: #b85c8c;
   }
+
+  .section {
+    margin-bottom: 4rem; /* 섹션 사이의 여백을 증가시킵니다. */
+  }
+
+  .section-border {
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+  }
 }
 
 @layer base {
