@@ -1,9 +1,11 @@
+// src/app/page.tsx
+
 "use client";
 
 import { useState } from 'react';
-import { Component } from '@/components/component'; // 상단 헤더가 포함되어 있다면 수정이 필요
+import { Component } from '@/components/component';
 import { LoginComponent } from '@/components/login-component';
-import { RegisterComponent } from '@/components/register-component'; // RegisterComponent 임포트
+import { RegisterComponent } from '@/components/register-component';
 import Link from 'next/link';
 import { MountainIcon } from "@/components/icons/mountain-icon";
 
@@ -13,12 +15,12 @@ export default function HomePage() {
 
   const toggleLogin = () => {
     setLoginOpen(!isLoginOpen);
-    if (isRegisterOpen) setRegisterOpen(false); // 회원가입 모달이 열려 있으면 닫기
+    if (isRegisterOpen) setRegisterOpen(false);
   };
 
   const toggleRegister = () => {
     setRegisterOpen(!isRegisterOpen);
-    if (isLoginOpen) setLoginOpen(false); // 로그인 모달이 열려 있으면 닫기
+    if (isLoginOpen) setLoginOpen(false);
   };
 
   return (
@@ -57,7 +59,6 @@ export default function HomePage() {
         <Component />
       </main>
 
-      {/* 추가된 섹션 */}
       <section className="py-16 bg-gray-100 text-center">
         <h2 className="text-4xl font-extrabold mb-4 text-gray-800">We are ready for your contribution.</h2>
         <p className="text-lg text-gray-600 mb-6">Join us in shaping the future. Your input is invaluable!</p>
@@ -73,7 +74,7 @@ export default function HomePage() {
       {isLoginOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <LoginComponent />
+            <LoginComponent onRegister={toggleRegister} />
             <button
               className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded"
               onClick={toggleLogin}
@@ -87,7 +88,7 @@ export default function HomePage() {
       {isRegisterOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <RegisterComponent />
+            <RegisterComponent onLogin={toggleLogin} />
             <button
               className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded"
               onClick={toggleRegister}
