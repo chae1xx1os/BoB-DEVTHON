@@ -78,7 +78,7 @@ class AssignmentBase(BaseModel):
     due_date: int
 
 class AssignmentCreate(AssignmentBase):
-    pass
+    submit_num: int
 
 class Assignment(AssignmentBase):
     id: int

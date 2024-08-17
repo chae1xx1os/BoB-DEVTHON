@@ -8,7 +8,7 @@ from typing import Optional
 from schemas import Token, UserCreate, UserCreateresponse, User as UserSchema
 from database import db
 from models import Base, User
-from user import get_user_by_username, get_user_by_user_id, create_user as original_create_user
+from user import get_user_id_by_token, get_user_by_username, get_user_by_user_id, create_user as original_create_user
 
 app = FastAPI()
 
@@ -70,3 +70,34 @@ def create_user_endpoint(user: UserCreate, db: Session = Depends(db.get_session)
         username=new_user.username,
         created_at=new_user.created_at
     )
+
+import assignment as assignment_crud
+from schemas import Assignment, AssignmentCreate
+from typing import List
+
+@app.get("/api/assignment", response_model=List[Assignment])
+def read_assignments(skip: int = 0, limit: int = 10, db: Session = Depends(db.get_session)):
+    assignments = assignment_crud.get_assignments(db, skip=skip, limit=limit)
+    return assignments
+
+@app.post("/api/assignment", response_model=Assignment)
+def create_assignment(assignment: AssignmentCreate, db: Session = Depends(db.get_session)):
+    new_assignment = assignment_crud.create_assignment(db=db, assignment=assignment)
+    return new_assignment
+
+import assignmentbord, schemas
+
+@app.get("/api/assignmentbord/{token}", response_model=List[schemas.AssignmentBordBase])
+def read_assignment_bords(token: str, db: Session = Depends(db.get_session)):
+    user_id = get_user_id_by_token(db, token)
+    if not user_id:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    assignment_bords = assignmentbord.get_assignment_bords_for_user(db, user_id)
+    return [
+        schemas.AssignmentBordBase(
+            assignment_name=ab.assignment_name,
+            is_submit=ab.is_submit
+        )
+        for ab in assignment_bords
+    ]
