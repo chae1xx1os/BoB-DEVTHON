@@ -1,5 +1,4 @@
 // src/app/page.tsx
-
 "use client";
 
 import { useState } from 'react';
@@ -12,6 +11,7 @@ import { MountainIcon } from "@/components/icons/mountain-icon";
 export default function HomePage() {
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isRegisterOpen, setRegisterOpen] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false); // 로그인 상태 관리
 
   const toggleLogin = () => {
     setLoginOpen(!isLoginOpen);
@@ -21,6 +21,17 @@ export default function HomePage() {
   const toggleRegister = () => {
     setRegisterOpen(!isRegisterOpen);
     if (isLoginOpen) setLoginOpen(false);
+  };
+
+  const handleLogin = () => {
+    // 로그인 성공 시 호출
+    setLoggedIn(true);
+    setLoginOpen(false);
+  };
+
+  const handleLogout = () => {
+    // 로그아웃 시 호출
+    setLoggedIn(false);
   };
 
   return (
@@ -40,23 +51,44 @@ export default function HomePage() {
         </div>
 
         <div className="flex items-center gap-4">
-          <button
-            className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            onClick={toggleLogin}
-          >
-            로그인
-          </button>
-          <button
-            className="p-2 bg-green-500 text-white rounded hover:bg-green-600"
-            onClick={toggleRegister}
-          >
-            회원가입
-          </button>
+          {isLoggedIn ? (
+            <>
+              <span className="text-lg text-muted-foreground">OOO이 로그인된 상태입니다.</span>
+              <button
+                className="p-2 bg-red-500 text-white rounded hover:bg-red-600"
+                onClick={handleLogout}
+              >
+                로그아웃
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                onClick={toggleLogin}
+              >
+                로그인
+              </button>
+              <button
+                className="p-2 bg-green-500 text-white rounded hover:bg-green-600"
+                onClick={toggleRegister}
+              >
+                회원가입
+              </button>
+            </>
+          )}
         </div>
       </header>
 
       <main className="flex-grow container mx-auto p-6">
-        <Component />
+        {isLoggedIn ? (
+          <div className="text-center text-2xl font-semibold">
+            <p>Most Popular Coding Frameworks</p>
+            {/* 여기에 로그인된 상태의 내용을 추가합니다 */}
+          </div>
+        ) : (
+          <Component />
+        )}
       </main>
 
       <section className="py-16 bg-gray-100 text-center">
