@@ -6,7 +6,7 @@ if __name__ == '__main__':
     try:
         if LOG == 'debug':
             uvicorn.run(
-                "api:app",
+                "userapi:app",
                 host='0.0.0.0',
                 port=8080,
                 workers=1,
@@ -15,7 +15,7 @@ if __name__ == '__main__':
             )
         else:
             uvicorn.run(
-                "api:app",
+                "userapi:app",
                 host='0.0.0.0',
                 port=8080,
                 workers=5,

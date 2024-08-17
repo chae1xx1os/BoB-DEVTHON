@@ -11,16 +11,25 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
+    token: int
     created_at: datetime
     
     class Config:
-        orm_mode = True
-
+        from_attributes = True  # 변경된 부분
+class UserCreateresponse(UserBase):
+    created_at: datetime
 class CodeBase(BaseModel):
     assignment_id: int
     code_name: str
     user_id: int
     code: dict
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
 
 class CodeCreate(CodeBase):
     pass
@@ -30,7 +39,7 @@ class Code(CodeBase):
     ddabong: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # 변경된 부분
 
 class ReviewBase(BaseModel):
     user_id: str
@@ -48,7 +57,7 @@ class Review(ReviewBase):
     update_time: Optional[datetime]
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # 변경된 부분
 
 class RankBase(BaseModel):
     user_id: str
@@ -62,7 +71,7 @@ class Rank(RankBase):
     update_time: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # 변경된 부분
 
 class AssignmentBase(BaseModel):
     assignment_name: str
@@ -75,7 +84,7 @@ class Assignment(AssignmentBase):
     id: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # 변경된 부분
 
 class AssignmentBordBase(BaseModel):
     user_id: str
@@ -104,4 +113,4 @@ class AssignmentCode(AssignmentCodeBase):
     ddabong: int
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # 변경된 부분

@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, JSON, Double, Timestamp, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, JSON, Double, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
-from .database import Base
+from database import Base
 
 class User(Base):
     __tablename__ = 'users'
@@ -10,7 +10,8 @@ class User(Base):
     username = Column(String, nullable=False)
     password = Column(String, nullable=False)
     token = Column(Integer, default=0)
-    created_at = Column(Timestamp, nullable=False, server_default='CURRENT_TIMESTAMP')
+    reword = Column(Integer, default=0)
+    created_at = Column(DateTime, nullable=False, server_default='CURRENT_TIMESTAMP')
 
 class Code(Base):
     __tablename__ = 'code'
@@ -30,8 +31,8 @@ class Review(Base):
     content = Column(String, nullable=False)
     ddabong = Column(Integer)
     is_update = Column(Boolean, default=False)
-    create_time = Column(Timestamp, nullable=False, server_default='CURRENT_TIMESTAMP')
-    update_time = Column(Timestamp)
+    create_time = Column(DateTime, nullable=False, server_default='CURRENT_TIMESTAMP')
+    update_time = Column(DateTime)
 
 class Rank(Base):
     __tablename__ = 'rank'
@@ -39,7 +40,7 @@ class Rank(Base):
     id = Column(Integer, primary_key=True, index=True)
     rank = Column(Integer, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    update_time = Column(Timestamp, nullable=False, server_default='CURRENT_TIMESTAMP')
+    update_time = Column(DateTime, nullable=False, server_default='CURRENT_TIMESTAMP')
 
  
 class Assignment(Base):
@@ -66,7 +67,7 @@ class AssignmentCode(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     assignment_id = Column(Integer, ForeignKey('assignment.id'), nullable=False)
-    submit_date = Column(Timestamp, nullable=False, server_default='CURRENT_TIMESTAMP')
+    submit_date = Column(DateTime, nullable=False, server_default='CURRENT_TIMESTAMP')
     laguage = Column(String, nullable=False)
     ai_rate = Column(Double)
     ddabong = Column(Integer)

@@ -2,7 +2,7 @@ import os
 import pymysql
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 from config import conf
 
@@ -34,6 +34,4 @@ class SQLAlchemy():
 db = SQLAlchemy()
 Base = declarative_base()
 
-from models import Access_Table, User
 
-Base.metadata.create_all(db.engine)
