@@ -61,148 +61,114 @@ export function Component() {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <header className="bg-background border-b flex items-center justify-between px-6 py-4 shadow-sm">
-        <div className="flex items-center gap-4">
-          <Link href="#" className="flex items-center gap-2" prefetch={false}>
-            <MountainIcon className="w-8 h-8" />
-            <span className="text-2xl font-semibold">해와달</span>
-          </Link>
-          <Link href="#" className="text-lg text-muted-foreground hover:text-foreground" prefetch={false}>
-            Task Board
-          </Link>
+    <div className="flex-1 grid grid-cols-2 gap-6 p-6">
+      <div className="bg-background rounded-lg shadow-sm border p-6">
+        <div className="border-b pb-4">
+          <h2 className="text-2xl font-semibold">Assignment Board</h2>
         </div>
-        <div className="flex items-center gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <Image
-                  src="/1.png"
-                  width={64}
-                  height={64}
-                  alt="Avatar"
-                  className="rounded-full"
-                />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Signed in as Taeyang Kim</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </header>
-      <div className="flex-1 grid grid-cols-2 gap-6 p-6">
-        <div className="bg-background rounded-lg shadow-sm border p-6">
-          <div className="border-b pb-4">
-            <h2 className="text-2xl font-semibold">Assignment Board</h2>
+        <div className="pt-4 space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <FileIcon className="w-6 h-6 text-muted-foreground" />
+              <div>
+                <div className="text-lg font-medium">Assignment 1</div>
+                <div className="text-sm text-muted-foreground">Due: 2023-05-15</div>
+              </div>
+            </div>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <MoveHorizontalIcon className="w-6 h-6" />
+            </Button>
           </div>
-          <div className="pt-4 space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <FileIcon className="w-6 h-6 text-muted-foreground" />
-                <div>
-                  <div className="text-lg font-medium">Assignment 1</div>
-                  <div className="text-sm text-muted-foreground">Due: 2023-05-15</div>
-                </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <FileIcon className="w-6 h-6 text-muted-foreground" />
+              <div>
+                <div className="text-lg font-medium">Assignment 2</div>
+                <div className="text-sm text-muted-foreground">Due: 2023-05-22</div>
               </div>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <MoveHorizontalIcon className="w-6 h-6" />
-              </Button>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <FileIcon className="w-6 h-6 text-muted-foreground" />
-                <div>
-                  <div className="text-lg font-medium">Assignment 2</div>
-                  <div className="text-sm text-muted-foreground">Due: 2023-05-22</div>
-                </div>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <MoveHorizontalIcon className="w-6 h-6" />
+            </Button>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <FileIcon className="w-6 h-6 text-muted-foreground" />
+              <div>
+                <div className="text-lg font-medium">Assignment 3</div>
+                <div className="text-sm text-muted-foreground">Due: 2023-05-29</div>
               </div>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <MoveHorizontalIcon className="w-6 h-6" />
-              </Button>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <FileIcon className="w-6 h-6 text-muted-foreground" />
-                <div>
-                  <div className="text-lg font-medium">Assignment 3</div>
-                  <div className="text-sm text-muted-foreground">Due: 2023-05-29</div>
-                </div>
-              </div>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <MoveHorizontalIcon className="w-6 h-6" />
-              </Button>
-            </div>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <MoveHorizontalIcon className="w-6 h-6" />
+            </Button>
           </div>
         </div>
-        <div className="grid gap-6">
-          {/* 상단 부분에 인기 프레임워크 그래프 표시 */}
-          <Card className="p-4">
-            <CardHeader className="flex items-center justify-between pb-4">
-              <CardTitle className="text-2xl">Most Popular Coding Frameworks</CardTitle>
-            </CardHeader>
-            <CardContent className="h-96 p-4"> {/* 높이를 키워서 그래프가 더 크고 중앙에 위치하도록 설정 */}
-              <div className="h-full pt-24">
-                <Bar data={data} options={options} />
+      </div>
+      <div className="grid gap-6">
+        {/* 상단 부분에 인기 프레임워크 그래프 표시 */}
+        <Card className="p-4">
+          <CardHeader className="flex items-center justify-between pb-4">
+            <CardTitle className="text-2xl">Most Popular Coding Frameworks</CardTitle>
+          </CardHeader>
+          <CardContent className="h-96 p-4"> {/* 높이를 키워서 그래프가 더 크고 중앙에 위치하도록 설정 */}
+            <div className="h-full pt-24">
+              <Bar data={data} options={options} />
+            </div>
+          </CardContent>
+        </Card>
+        {/* 하단의 리더보드는 그대로 유지 */}
+        <Card>
+          <CardHeader className="flex items-center justify-between">
+            <CardTitle className="text-2xl">Leaderboard</CardTitle>
+            <Button variant="outline" size="sm">
+              View All
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="text-lg font-medium">Taeyang Kim</div>
+                    <div className="text-sm text-muted-foreground">1st Place</div>
+                  </div>
+                </div>
+                <div className="text-xl font-bold">1500</div>
               </div>
-            </CardContent>
-          </Card>
-          {/* 하단의 리더보드는 그대로 유지 */}
-          <Card>
-            <CardHeader className="flex items-center justify-between">
-              <CardTitle className="text-2xl">Leaderboard</CardTitle>
-              <Button variant="outline" size="sm">
-                View All
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
-                      <AvatarFallback>JD</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="text-lg font-medium">Taeyang Kim</div>
-                      <div className="text-sm text-muted-foreground">1st Place</div>
-                    </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
+                    <AvatarFallback>JA</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="text-lg font-medium">Seunghyeon An</div>
+                    <div className="text-sm text-muted-foreground">2nd Place</div>
                   </div>
-                  <div className="text-xl font-bold">1500</div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
-                      <AvatarFallback>JA</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="text-lg font-medium">Seunghyeon An</div>
-                      <div className="text-sm text-muted-foreground">2nd Place</div>
-                    </div>
-                  </div>
-                  <div className="text-xl font-bold">1200</div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
-                      <AvatarFallback>SM</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="text-lg font-medium">Seongjun Moon</div>
-                      <div className="text-sm text-muted-foreground">3rd Place</div>
-                    </div>
-                  </div>
-                  <div className="text-xl font-bold">2100</div>
-                </div>
+                <div className="text-xl font-bold">1200</div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
+                    <AvatarFallback>SM</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="text-lg font-medium">Seongjun Moon</div>
+                    <div className="text-sm text-muted-foreground">3rd Place</div>
+                  </div>
+                </div>
+                <div className="text-xl font-bold">2100</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
